@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Читальня комиксов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: {% if user_theme == 'dark' %}#1a1a1a{% else %}#f8f9fa{% endif %};
+            color: {% if user_theme == 'dark' %}#fff{% else %}#212529{% endif %};
+            font-size: {% if user_font_size == 'small' %}0.9rem{% elif user_font_size == 'large' %}1.2rem{% else %}1rem{% endif %};
+        }
+        .navbar, .card, .footer {
+            background-color: {% if user_theme == 'dark' %}#2c2c2c{% else %}#fff{% endif %} !important;
+        }
+        .navbar-brand, .nav-link {
+            color: {% if user_theme == 'dark' %}#fff{% else %}#212529{% endif %} !important;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'comic_list' %}">📚 ComicReader</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'comic_list' %}">Главная</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'user_settings' %}">Настройки</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Выйти ({{ user.username }})</a></li>
+                        {% if user.is_staff %}
+                            <li class="nav-item"><a class="nav-link" href="/admin">Админка</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'export_report' %}">Отчёт XLSX</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Вход</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Регистрация</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer mt-5 py-3 text-center">
+        <div class="container">
+            <span class="text-muted">© 2026 Читальня комиксов</span>
+        </div>
+    </footer>
+</body>
+</html>

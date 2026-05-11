@@ -1,0 +1,9 @@
+.\venv\Scripts\Activate.ps1
+
+docker compose restart web
+
+docker compose up -d
+
+http://localhost:8000
+
+docker compose exec web python manage.py createsuperuser

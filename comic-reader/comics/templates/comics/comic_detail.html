@@ -1,0 +1,42 @@
+{% extends 'comics/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>{{ comic.title }}</h2>
+        <p>{{ comic.description }}</p>
+        <p><strong>Жанр:</strong> {{ comic.get_genre_display }}</p>
+        <p><strong>Дата выпуска:</strong> {{ comic.release_date }}</p>
+        <p><strong>Средний рейтинг:</strong> {{ comic.average_rating|floatformat:1 }}/5</p>
+        {% if comic.cover %}
+            <img src="{{ comic.cover.url }}" class="img-fluid">
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <h4>Отзывы</h4>
+        {% if user.is_authenticated %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary mt-2">Оставить отзыв</button>
+            </form>
+        {% else %}
+            <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв.</p>
+        {% endif %}
+        <hr>
+        {% for review in reviews %}
+            <div class="card mt-2">
+                <div class="card-body">
+                    <strong>{{ review.user.username }}</strong> — оценка: {{ review.rating }}/5
+                    <p>{{ review.comment }}</p>
+                    {% if review.user == user %}
+                        <a href="{% url 'edit_review' review.pk %}">Редактировать</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p>Пока нет отзывов. Будьте первым!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
